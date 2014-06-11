@@ -178,6 +178,14 @@
             
             // test is open
             if ([tilesActions isOpen]) {
+                
+                // we need to check whether the params object is really an array
+                // in case the parameter is only one, cordova doesn't wrap it into an array
+                if (![params isKindOfClass:[NSArray class]]) {
+                    // here it is wrapped it, so we can continue normally
+                    params = [NSArray arrayWithObject:params];
+                }
+                
                 // execute request
                 NSDictionary* data = [tilesActions executeStatement:query withParams:params];
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
