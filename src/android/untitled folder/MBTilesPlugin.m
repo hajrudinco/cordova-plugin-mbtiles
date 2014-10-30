@@ -18,7 +18,7 @@
         CDVPluginResult* pluginResult = nil;
         
         NSDictionary* dict = [command.arguments objectAtIndex:0];
-        // get the url and name
+        // get the type and name
         NSString* name = nil;
         if ([dict objectForKey:KEY_NAME] != nil) {
             name = dict[KEY_NAME];
