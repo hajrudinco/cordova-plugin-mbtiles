@@ -72,7 +72,10 @@
             if ([tilesActions isOpen]) {
                 // get tiles
                 NSDictionary* data = [tilesActions getTile:z columnValue:x rowValue:y];
-                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
+                if ([data count] == 0)
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Tile not found. File: %@", name]];
+                else
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
             } else {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
             }
