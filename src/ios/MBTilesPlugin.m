@@ -29,13 +29,11 @@
         }
         
         if (dbmap == nil)
-            dbmap = [NSMutableDictionary init];
+            dbmap = [[NSMutableDictionary alloc] init];
         
         MBTilesActions* tilesActions = [dbmap objectForKey:name];
         if (tilesActions != nil)
             [tilesActions close];
-        else
-            [dbmap setObject:tilesActions forKey:name];
         
         // init db with name
         CDVFile* filePlugin = [self.commandDelegate getCommandInstance:@"File"];
@@ -48,6 +46,7 @@
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
         }
         
+        [dbmap setObject:tilesActions forKey:name];
         
         // The sendPluginResult method is thread-safe.
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];

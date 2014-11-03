@@ -10,8 +10,8 @@
 @implementation MBTilesActions
 @synthesize database = _database;
 @synthesize lock = _lock;
-@synthesize cdvfile = _cdvfile;
-@synthesize directory = _directory;
+@synthesize cdvfile;
+@synthesize directory;
 
 /**
  * init the class
@@ -35,7 +35,8 @@
 - (id) initWithNameAndUrl:(NSString*)name withCDVFile:(CDVFile*)filePlugin withUrl:(NSString*) url {
     _database = nil;
     _lock = [[NSLock alloc] init];
-    _directory = url;
+    directory = url;
+    cdvfile = filePlugin;
     
     [self open:name];
     
@@ -110,7 +111,7 @@
     // Get a CDVFilesystem URL object from a URL string
     CDVFilesystemURL* urlCDV = [CDVFilesystemURL fileSystemURLWithString:self.directory];
     // Get a path for the URL object, or nil if it cannot be mapped to a file
-    dir = [_cdvfile filesystemPathForURL:urlCDV];
+    dir = [cdvfile filesystemPathForURL:urlCDV];
     
     return dir;
 }
