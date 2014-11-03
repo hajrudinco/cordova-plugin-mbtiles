@@ -53,7 +53,7 @@
     }];
 }
 
-- (void)get_tile:(CDVInvokedUrlCommand*)command {
+- (void)getTile:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;
         

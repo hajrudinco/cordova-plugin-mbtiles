@@ -25,7 +25,7 @@
 /**
 * action get_tile 
 */
-- (void)get_tile:(CDVInvokedUrlCommand*)command;
+- (void)getTile:(CDVInvokedUrlCommand*)command;
 
 @property(readwrite, retain)NSMutableDictionary* dbmap;
 @end
