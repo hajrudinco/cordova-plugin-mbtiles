@@ -1,10 +1,16 @@
 package com.ginasystem.plugins.mbtiles;
 
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -102,7 +108,15 @@ public class MBTilesPlugin extends CordovaPlugin
             dbmap.remove(name);
         }
 
-        MBTilesActions runner = new MBTilesActions(this.cordova.getActivity(), webView.getResourceApi(), url, name);
+        MBTilesActions runner;
+
+        try {
+            runner = new MBTilesActions(this.cordova.getActivity(), webView.getResourceApi(), url, name);
+            Log.d(getClass().getName(), "openDatabase : " + url);
+        } catch (SQLiteException e) {
+            return new PluginResult(PluginResult.Status.IO_EXCEPTION, "can't open database :" + e.getMessage());
+        }
+
         if (runner.isOpen()) {
             dbmap.put(name, runner);
             return new PluginResult(PluginResult.Status.OK);
@@ -127,14 +141,16 @@ public class MBTilesPlugin extends CordovaPlugin
 
 		if ((runner != null) && runner.isOpen())
 		{
-			return new PluginResult(
-                PluginResult.Status.OK,
-                runner.getTile(
+            JSONObject tile = runner.getTile(
                     data.getJSONObject(1).getInt("z"),
                     data.getJSONObject(1).getInt("x"),
                     data.getJSONObject(1).getInt("y")
-                )
             );
+
+            if (tile == null)
+                return new PluginResult(PluginResult.Status.ERROR);
+
+			return new PluginResult(PluginResult.Status.OK, tile);
 		}
 
 	    return new PluginResult(PluginResult.Status.IO_EXCEPTION);

@@ -11,10 +11,13 @@ import android.database.CursorWindow;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
+
+import java.sql.SQLException;
 
 /**
  * Simplification of com.makina.offline.mbtiles
@@ -29,7 +32,7 @@ public class MBTilesActions
     protected Context mContext;
 	private SQLiteDatabase db = null;
 
-    public MBTilesActions(Context context, CordovaResourceApi resourceApi, String url, String name) {
+    public MBTilesActions(Context context, CordovaResourceApi resourceApi, String url, String name) throws SQLiteException {
 
         this.mContext = context;
         this.mDirectory = null;
@@ -49,6 +52,8 @@ public class MBTilesActions
             } catch (SQLiteCantOpenDatabaseException e) {
                 close();
                 Log.e(getClass().getName(), "can't open database :" + e.getMessage());
+            } catch (SQLiteException e) {
+                Log.e(getClass().getName(), "openDatabase : " + this.db.getPath());
             }
         } else {
             close();
@@ -111,7 +116,10 @@ public class MBTilesActions
 		{
 			try
 			{
-				tileData.put(KEY_TILE_DATA, Base64.encodeToString(cursor.getBlob(cursor.getColumnIndex("tile_data")), Base64.DEFAULT));
+                byte[] bytes = cursor.getBlob(cursor.getColumnIndex("tile_data"));
+                if (bytes == null || bytes.length == 0)
+                    return null;
+				tileData.put(KEY_TILE_DATA, Base64.encodeToString(bytes, Base64.DEFAULT));
 			}
 			catch (JSONException je)
 			{
