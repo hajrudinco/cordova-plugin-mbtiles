@@ -116,14 +116,14 @@ public class MBTilesActions
 		{
 			try
 			{
-                byte[] bytes = cursor.getBlob(cursor.getColumnIndex("tile_data"));
-                if (bytes == null || bytes.length == 0)
-                    return null;
-				tileData.put(KEY_TILE_DATA, Base64.encodeToString(bytes, Base64.DEFAULT));
+                		String tileValue = cursor.getString(cursor.getColumnIndex("tile_data"));
+				if (tileValue == null || tileValue.length() == 0)
+				    return null;
+				tileData.put(KEY_TILE_DATA, tileValue);
 			}
-			catch (JSONException je)
+			catch (Exception ex)
 			{
-				Log.e(getClass().getName(), je.getMessage(), je);
+				Log.e(getClass().getName(), ex.getMessage(), ex);
 			}
 		}
 		
