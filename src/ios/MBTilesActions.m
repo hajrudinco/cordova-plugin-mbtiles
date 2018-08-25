@@ -94,10 +94,9 @@
             sqlite3_bind_int(stmt, 3, row);
             // treat answer
             if(sqlite3_step(stmt) == SQLITE_ROW) {
-                NSUInteger blobLenght = sqlite3_column_bytes(stmt, 0);
-                NSData * data = [NSData dataWithBytes:sqlite3_column_blob(stmt, 0) length:blobLenght];
-                NSString * stringBase64 = [MBTilesConstant base64forData:data];
-                [dict setObject:stringBase64 forKey:KEY_TILE_DATA];
+                const char * _value = (char *) sqlite3_column_text(stmt, 0);
+                NSString * value = [[NSString alloc] initWithUTF8String:_value];
+                [dict setObject:value forKey:KEY_TILE_DATA];
             }
             sqlite3_finalize(stmt);
         }
